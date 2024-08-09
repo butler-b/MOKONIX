@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nurse Homepage</title>
+</head>
+<body>
+    <h1>Nurse Homepage</h1>
+    <form method="POST">
+        <label for="usinghospitalbed">Update Hospital Bed Count:</label>
+        <input type="number" name="usinghospitalbed" required>
+        <br>
+        <input type="submit" value="Update">
+    </form>
+    <a href="{{ url_for('logout') }}">Logout</a>
+</body>
+</html>
