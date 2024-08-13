@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital Search</title>
+</head>
+<body>
+    <h1>Hospital Search</h1>
+    <input type="text" id="search" placeholder="Enter hospital name">
+    <button onclick="searchHospitals()">Search</button>
+    <ul id="results"></ul>
+
+    <script>
+        function searchHospitals() {
+            fetch('/api/hospitals')
+                .then(response => response.json())
+                .then(data => {
+                    const results = document.getElementById('results');
+                    results.innerHTML = '';
+                    data.forEach(hospital => {
+                        const li = document.createElement('li');
+                        li.textContent = `${hospital.name} - ${hospital.address}`;
+                        results.appendChild(li);
+                    });
+                });
+        }
+    </script>
+</body>
+</html>
+

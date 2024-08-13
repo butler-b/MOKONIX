@@ -1,0 +1,20 @@
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  - job_name: 'flask_app'
+    static_configs:
+      - targets: ['flask_app:5000']
+
+  - job_name: 'nginx_web'
+    static_configs:
+      - targets: ['webserver:80']
+
+  - job_name: 'nginx_proxy'
+    static_configs:
+      - targets: ['proxyserver:80']
+

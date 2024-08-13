@@ -1,0 +1,67 @@
+services:
+  proxyserver:
+    build: ./proxyserver
+    container_name: proxyserver
+    ports:
+      - "80:80"
+    depends_on:
+      - webserver
+    networks:
+      - app-network
+
+  webserver:
+    build: ./webserver
+    container_name: webserver
+    depends_on:
+      - app
+    networks:
+      - app-network
+
+  app:
+    build: ./app
+    container_name: flask_app
+    expose:
+      - "5000"
+    networks:
+      - app-network
+    depends_on:
+      - db
+
+  db:
+    build: ./db
+    container_name: db
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+      MYSQL_DATABASE: hospitaldb
+      MYSQL_USER: exampleuser
+      MYSQL_PASSWORD: examplepass
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - app-network
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    networks:
+      - app-network
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  db_data:
+
