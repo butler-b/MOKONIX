@@ -57,7 +57,7 @@
         hardware:
           memory_mb: 4096  # 메모리를 4GB로 설정
           num_cpus: 2
-        state: powered_on  # VM을 생성 후 전원을 켭니다.
+        state: powered-on  # 올바른 상태 값 사용
       loop: "{{ app_vms | product(esxi_hosts) | list }}"
       loop_control:
         loop_var: "combined"
