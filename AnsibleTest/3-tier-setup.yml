@@ -60,17 +60,19 @@
           num_cpus: 2
       loop: "{{ app_vms | product(esxi_hosts) | list }}"
       loop_control:
-        loop_var: "app_vm"
-        label: "{{ app_vm.0.base_name }}{{ app_vm.1.esxi_id }}"
+        loop_var: "combined"
+      vars:
+        app_vm: "{{ combined.0 }}"
+        esxi_host: "{{ combined.1 }}"
 
     - name: Install and configure Nginx on web server
-      when: app_vm.0.role == "nginx"
+      when: app_vm.role == "nginx"
       community.vmware.vmware_vm_shell:
         hostname: "{{ vcenter_hostname }}"
         username: "{{ vcenter_username }}"
         password: "{{ vcenter_password }}"
         validate_certs: no
-        vm_id: "{{ app_vm.0.base_name }}{{ app_vm.1.esxi_id }}"
+        vm_id: "{{ app_vm.base_name }}{{ esxi_host.esxi_id }}"
         vm_shell: |
           yum install -y epel-release
           yum install -y nginx
@@ -80,17 +82,19 @@
           firewall-cmd --reload
       loop: "{{ app_vms | product(esxi_hosts) | list }}"
       loop_control:
-        loop_var: "app_vm"
-        label: "{{ app_vm.0.base_name }}{{ app_vm.1.esxi_id }}"
+        loop_var: "combined"
+      vars:
+        app_vm: "{{ combined.0 }}"
+        esxi_host: "{{ combined.1 }}"
 
     - name: Install and configure Flask on app server
-      when: app_vm.0.role == "flask"
+      when: app_vm.role == "flask"
       community.vmware.vmware_vm_shell:
         hostname: "{{ vcenter_hostname }}"
         username: "{{ vcenter_username }}"
         password: "{{ vcenter_password }}"
         validate_certs: no
-        vm_id: "{{ app_vm.0.base_name }}{{ app_vm.1.esxi_id }}"
+        vm_id: "{{ app_vm.base_name }}{{ esxi_host.esxi_id }}"
         vm_shell: |
           yum install -y python3 python3-pip
           pip3 install Flask
@@ -108,17 +112,19 @@
           firewall-cmd --reload
       loop: "{{ app_vms | product(esxi_hosts) | list }}"
       loop_control:
-        loop_var: "app_vm"
-        label: "{{ app_vm.0.base_name }}{{ app_vm.1.esxi_id }}"
+        loop_var: "combined"
+      vars:
+        app_vm: "{{ combined.0 }}"
+        esxi_host: "{{ combined.1 }}"
 
     - name: Install and configure MariaDB on DB server
-      when: app_vm.0.role == "mariadb"
+      when: app_vm.role == "mariadb"
       community.vmware.vmware_vm_shell:
         hostname: "{{ vcenter_hostname }}"
         username: "{{ vcenter_username }}"
         password: "{{ vcenter_password }}"
         validate_certs: no
-        vm_id: "{{ app_vm.0.base_name }}{{ app_vm.1.esxi_id }}"
+        vm_id: "{{ app_vm.base_name }}{{ esxi_host.esxi_id }}"
         vm_shell: |
           yum install -y mariadb-server
           systemctl start mariadb
@@ -128,5 +134,7 @@
           firewall-cmd --reload
       loop: "{{ app_vms | product(esxi_hosts) | list }}"
       loop_control:
-        loop_var: "app_vm"
-        label: "{{ app_vm.0.base_name }}{{ app_vm.1.esxi_id }}"
+        loop_var: "combined"
+      vars:
+        app_vm: "{{ combined.0 }}"
+        esxi_host: "{{ combined.1 }}"
