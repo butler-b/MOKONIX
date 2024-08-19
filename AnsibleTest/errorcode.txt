@@ -3,7 +3,7 @@ mokonix@linux-ansible:~/MOKONIX/AnsibleTest$ ansible-playbook -i inventory 3-tie
 PLAY [Configure VMware Environment] ****************************************************************
 
 TASK [Create VMs for 3-Tier Application on ESXi Hosts] *********************************************
-fatal: [localhost]: FAILED! => {"msg": "The task includes an option with an undefined variable. The error was: 'item' is undefined\n\nThe error appears to be in '/home/mokonix/MOKONIX/AnsibleTest/3-tier-setup.yml': line 38, column 7, but may\nbe elsewhere in the file depending on the exact syntax problem.\n\nThe offending line appears to be:\n\n  tasks:\n    - name: Create VMs for 3-Tier Application on ESXi Hosts\n      ^ here\n"}
+fatal: [localhost]: FAILED! => {"msg": "The task includes an option with an undefined variable. The error was: 'list object' has no attribute 'base_name'\n\nThe error appears to be in '/home/mokonix/MOKONIX/AnsibleTest/3-tier-setup.yml': line 38, column 7, but may\nbe elsewhere in the file depending on the exact syntax problem.\n\nThe offending line appears to be:\n\n  tasks:\n    - name: Create VMs for 3-Tier Application on ESXi Hosts\n      ^ here\n"}
 
 PLAY RECAP *****************************************************************************************
 localhost                  : ok=0    changed=0    unreachable=0    failed=1    skipped=0    rescued=0    ignored=0   
