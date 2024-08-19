@@ -19,46 +19,23 @@
       - name: esxi01
         hostname: esxi01.local
         ip: "192.168.1.11"
+        esxi_id: 01
       - name: esxi02
         hostname: esxi02.local
         ip: "192.168.1.12"
+        esxi_id: 02
 
     # VM settings
     app_vms:
-      - name: "web01"
-        ip: "192.168.1.21"
+      - base_name: "web"
         role: "nginx"
-      - name: "app01"
-        ip: "192.168.1.22"
+      - base_name: "app"
         role: "flask"
-      - name: "db01"
-        ip: "192.168.1.23"
+      - base_name: "db"
         role: "mariadb"
 
   tasks:
-    - name: Configure ESXi Hosts
-      community.vmware.vmware_host:
-        hostname: "{{ vcenter_hostname }}"
-        username: "{{ vcenter_username }}"
-        password: "{{ vcenter_password }}"
-        cluster_name: "{{ cluster }}"
-        datacenter_name: "{{ datacenter }}"
-        esxi_hostname: "{{ item.hostname }}"
-        state: present
-      loop: "{{ esxi_hosts }}"
-
-    - name: Add ESXi hosts to vCenter
-      community.vmware.vmware_host:
-        hostname: "{{ vcenter_hostname }}"
-        username: "{{ vcenter_username }}"
-        password: "{{ vcenter_password }}"
-        cluster_name: "{{ cluster }}"
-        datacenter_name: "{{ datacenter }}"
-        esxi_hostname: "{{ item.hostname }}"
-        state: present
-      loop: "{{ esxi_hosts }}"
-
-    - name: Create VMs for 3-Tier Application
+    - name: Create VMs for 3-Tier Application on ESXi Hosts
       community.vmware.vmware_guest:
         hostname: "{{ vcenter_hostname }}"
         username: "{{ vcenter_username }}"
@@ -66,12 +43,12 @@
         validate_certs: no
         datacenter: "{{ datacenter }}"
         cluster: "{{ cluster }}"
-        name: "{{ item.name }}"
+        name: "{{ item.base_name }}{{ esxi_host.esxi_id }}"
         template: "{{ vm_template }}"
         power_on: yes
         networks:
           - name: "{{ network }}"
-            ip: "{{ item.ip }}"
+            ip: "{{ item.base_name }}{{ esxi_host.esxi_id }}"
             netmask: "255.255.255.0"
             gateway: "192.168.1.1"
         disk:
@@ -79,18 +56,23 @@
             type: thin
             datastore: "{{ datastore }}"
         hardware:
-          memory_mb: 2048
+          memory_mb: 4096  # 메모리를 4GB로 설정
           num_cpus: 2
       loop: "{{ app_vms }}"
+      loop_control:
+        loop_var: esxi_vm
+      with_items: "{{ esxi_hosts }}"
+      loop_control:
+        loop_var: "esxi_host"
 
     - name: Install and configure Nginx on web server
-      when: item.role == "nginx"
+      when: esxi_vm.role == "nginx"
       community.vmware.vmware_vm_shell:
         hostname: "{{ vcenter_hostname }}"
         username: "{{ vcenter_username }}"
         password: "{{ vcenter_password }}"
         validate_certs: no
-        vm_id: "web01"
+        vm_id: "{{ esxi_vm.base_name }}{{ esxi_host.esxi_id }}"
         vm_shell: |
           yum install -y epel-release
           yum install -y nginx
@@ -99,15 +81,20 @@
           firewall-cmd --permanent --zone=public --add-service=http
           firewall-cmd --reload
       loop: "{{ app_vms }}"
+      loop_control:
+        loop_var: esxi_vm
+      with_items: "{{ esxi_hosts }}"
+      loop_control:
+        loop_var: "esxi_host"
 
     - name: Install and configure Flask on app server
-      when: item.role == "flask"
+      when: esxi_vm.role == "flask"
       community.vmware.vmware_vm_shell:
         hostname: "{{ vcenter_hostname }}"
         username: "{{ vcenter_username }}"
         password: "{{ vcenter_password }}"
         validate_certs: no
-        vm_id: "app01"
+        vm_id: "{{ esxi_vm.base_name }}{{ esxi_host.esxi_id }}"
         vm_shell: |
           yum install -y python3 python3-pip
           pip3 install Flask
@@ -124,15 +111,20 @@
           firewall-cmd --permanent --zone=public --add-port=5000/tcp
           firewall-cmd --reload
       loop: "{{ app_vms }}"
+      loop_control:
+        loop_var: esxi_vm
+      with_items: "{{ esxi_hosts }}"
+      loop_control:
+        loop_var: "esxi_host"
 
     - name: Install and configure MariaDB on DB server
-      when: item.role == "mariadb"
+      when: esxi_vm.role == "mariadb"
       community.vmware.vmware_vm_shell:
         hostname: "{{ vcenter_hostname }}"
         username: "{{ vcenter_username }}"
         password: "{{ vcenter_password }}"
         validate_certs: no
-        vm_id: "db01"
+        vm_id: "{{ esxi_vm.base_name }}{{ esxi_host.esxi_id }}"
         vm_shell: |
           yum install -y mariadb-server
           systemctl start mariadb
@@ -141,3 +133,8 @@
           firewall-cmd --permanent --zone=public --add-service=mysql
           firewall-cmd --reload
       loop: "{{ app_vms }}"
+      loop_control:
+        loop_var: esxi_vm
+      with_items: "{{ esxi_hosts }}"
+      loop_control:
+        loop_var: "esxi_host"
