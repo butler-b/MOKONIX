@@ -1,0 +1,20 @@
+mokonix@linux-ansible:~/MOKONIX/AnsibleTest$ ansible-playbook -i inventory 3-tier-setup.yml
+[WARNING]: While constructing a mapping from /home/mokonix/MOKONIX/AnsibleTest/3-tier-setup.yml,
+line 38, column 7, found a duplicate dict key (loop_control). Using last defined value only.
+[WARNING]: While constructing a mapping from /home/mokonix/MOKONIX/AnsibleTest/3-tier-setup.yml,
+line 68, column 7, found a duplicate dict key (loop_control). Using last defined value only.
+[WARNING]: While constructing a mapping from /home/mokonix/MOKONIX/AnsibleTest/3-tier-setup.yml,
+line 90, column 7, found a duplicate dict key (loop_control). Using last defined value only.
+[WARNING]: While constructing a mapping from /home/mokonix/MOKONIX/AnsibleTest/3-tier-setup.yml,
+line 120, column 7, found a duplicate dict key (loop_control). Using last defined value only.
+ERROR! duplicate loop in task: items
+
+The error appears to be in '/home/mokonix/MOKONIX/AnsibleTest/3-tier-setup.yml': line 38, column 7, but may
+be elsewhere in the file depending on the exact syntax problem.
+
+The offending line appears to be:
+
+  tasks:
+    - name: Create VMs for 3-Tier Application on ESXi Hosts
+      ^ here
+mokonix@linux-ansible:~/MOKONIX/AnsibleTest$ 
