@@ -19,11 +19,11 @@
       - name: esxi01
         hostname: esxi01.local
         ip: "192.168.1.11"
-        esxi_id: 01
+        esxi_id: 1
       - name: esxi02
         hostname: esxi02.local
         ip: "192.168.1.12"
-        esxi_id: 02
+        esxi_id: 2
 
     # VM settings
     app_vms:
@@ -45,7 +45,6 @@
         cluster: "{{ cluster }}"
         name: "{{ app_vm.base_name }}{{ esxi_host.esxi_id }}"
         template: "{{ vm_template }}"
-        power_on: yes
         networks:
           - name: "{{ network }}"
             ip: "{{ esxi_host.ip }}"
@@ -58,6 +57,7 @@
         hardware:
           memory_mb: 4096  # 메모리를 4GB로 설정
           num_cpus: 2
+        state: powered_on  # VM을 생성 후 전원을 켭니다.
       loop: "{{ app_vms | product(esxi_hosts) | list }}"
       loop_control:
         loop_var: "combined"
