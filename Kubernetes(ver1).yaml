@@ -1,5 +1,36 @@
-# 나머지 서비스들에 대한 YAML 파일 추가
-nginx_exporter_yaml = """
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: proxyserver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: proxyserver
+  template:
+    metadata:
+      labels:
+        app: proxyserver
+    spec:
+      containers:
+      - name: proxyserver
+        image: proxyserver:latest
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: proxyserver
+spec:
+  selector:
+    app: proxyserver
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: LoadBalancer
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -32,9 +63,7 @@ spec:
       port: 9113
       targetPort: 9113
   type: ClusterIP
-"""
-
-webserver_yaml = """
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -67,9 +96,7 @@ spec:
       port: 80
       targetPort: 80
   type: ClusterIP
-"""
-
-app_yaml = """
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -107,9 +134,7 @@ spec:
       port: 5000
       targetPort: 5000
   type: ClusterIP
-"""
-
-db_yaml = """
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -151,8 +176,3 @@ spec:
       port: 3306
       targetPort: 3306
   type: ClusterIP
-"""
-
-# 전체 YAML 파일 조합
-complete_yaml = proxyserver_yaml + "\n---\n" + nginx_exporter_yaml + "\n---\n" + webserver_yaml + "\n---\n" + app_yaml + "\n---\n" + db_yaml
-complete_yaml
