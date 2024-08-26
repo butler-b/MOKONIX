@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Paramedic Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to the Paramedic Dashboard</h1>
+        <p>Manage patient records and hospital assignments here.</p>
+        <a href="{{ url_for('add_patient') }}">Add New Patient</a>
+        <a href="{{ url_for('logout') }}" class="logout">Logout</a>
+
+        <h2>Hospital Data</h2>
+        {% if hospitals %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Hospital Name</th>
+                        <th>Location</th>
+                        <th>Using Hospital Beds</th>
+                        <th>Available Hospital Beds</th>
+                        <th>ICD</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for hospital in hospitals %}
+                    <tr>
+                        
+                        <td>{{ hospital[1] }}</td>
+                        <td>{{ hospital[2] }}</td>
+                        <td>{{ hospital[3] }}</td>
+                        <td>{{ hospital[4] }}</td>
+                        <td>{{ hospital[5] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No hospital data available.</p>
+        {% endif %}
+    </div>
+</body>
+</html>
+

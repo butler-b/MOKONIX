@@ -1,0 +1,5 @@
+- hosts: all
+  become: true
+  tasks:
+    - include_tasks: /opt/ansible_project/playbooks/deploy_containers.yml
+    - include_tasks: /opt/ansible_project/playbooks/sync_containers.yml

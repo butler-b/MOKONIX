@@ -1,0 +1,15 @@
+[app_servers]
+Docker-WAS-DB-ExMid-1 ansible_host=10.10.2.2  router1_ip=10.10.2.2 router2_ip=20.10.1.2
+Docker-WAS-DB-ExMid-2 ansible_host=10.10.11.2 router1_ip=10.10.11.2 router2_ip=20.10.2.2
+
+[db_servers]
+Docker-WAS-DB-ExMid-1 ansible_host=10.10.2.2  router1_ip=10.10.2.2 router2_ip=20.10.1.2
+Docker-WAS-DB-ExMid-2 ansible_host=10.10.11.2 router1_ip=10.10.11.2 router2_ip=20.10.2.2
+
+[web_servers]
+Docker-WAS-DB-ExMid-1 ansible_host=10.10.2.2  router1_ip=10.10.2.2 router2_ip=20.10.1.2
+Docker-WAS-DB-ExMid-2 ansible_host=10.10.11.2 router1_ip=10.10.11.2 router2_ip=20.10.2.2
+
+[proxy_servers]
+Docker-WAS-DB-ExMid-1 ansible_host=10.10.2.2  router1_ip=10.10.2.2 router2_ip=20.10.1.2
+Docker-WAS-DB-ExMid-2 ansible_host=10.10.11.2 router1_ip=10.10.11.2 router2_ip=20.10.2.2
