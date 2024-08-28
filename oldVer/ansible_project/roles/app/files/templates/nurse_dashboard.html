@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Nurse Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Hospital Bed Management</h1>
+        <form method="POST">
+            <label for="hospitalName">Select Hospital:</label>
+            <select name="hospitalName" id="hospitalName" required>
+                {% for hospital in hospitals %}
+                <option value="{{ hospital[0] }}">{{ hospital[0] }}</option>
+                {% endfor %}
+            </select>
+            <label for="usingHospitalBeds">Used Hospital Beds:</label>
+            <input type="number" name="usingHospitalBeds" id="usingHospitalBeds" required>
+            <button type="submit">Update Bed Count</button>
+        </form>
+        <a href="{{ url_for('logout') }}" class="logout">Logout</a>
+    </div>
+</body>
+</html>
+

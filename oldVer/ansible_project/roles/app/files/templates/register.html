@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h2>Register</h2>
+        <form action="{{ url_for('register') }}" method="POST">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+
+            <label for="hospital">Hospital:</label>
+            <input type="text" id="hospital" name="hospital" required>
+
+            <label for="role">Role:</label>
+            <select id="role" name="role" required>
+                <option value="간호사">Nurse</option>
+                <option value="구조대원">Paramedic</option>
+            </select>
+
+            <button type="submit">Register</button>
+        </form>
+        <a href="{{ url_for('login') }}">Already have an account? Login here</a>
+        <!-- Index 페이지로 돌아가는 버튼 -->
+        <a href="/">Go to Home</a>
+    </div>
+</body>
+</html>
+

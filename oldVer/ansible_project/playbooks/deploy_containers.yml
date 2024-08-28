@@ -1,0 +1,8 @@
+- hosts: all
+  become: true
+  tasks:
+    - name: Deploy all services with Docker Compose
+      shell: |
+        docker-compose -f /opt/ansible_project/docker-compose.yml up -d --build
+      args:
+        chdir: /opt/ansible_project/

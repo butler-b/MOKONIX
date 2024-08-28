@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>환자 등록</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/add_patient.css') }}">
+</head>
+<body>
+
+   
+
+    <div class="form-container">
+        <h1>환자 등록</h1>
+        <form method="POST">
+            <label for="patient_id">환자 번호:</label>
+            <input type="number" id="patient_id" name="patient_id" required>
+            
+            <label for="name">이름:</label>
+            <input type="text" id="name" name="name" required>
+            
+            <label for="birthdate">생년월일 (주민번호 앞 6글자):</label>
+            <input type="number" id="birthdate" name="birthdate" required>
+            
+            <label for="blood_type">혈액형(+,-):</label>
+            <input type="text" id="blood_type" name="blood_type" required>
+            
+            <label for="icd">ICD Code:</label>
+            <input type="text" id="icd" name="icd" required>
+            
+            <button type="submit">환자 등록</button>
+        </form>
+
+        <h2>지원 가능 병원(by ICD):</h2>
+        {% if hospitals_matched %}
+            <ul>
+            {% for hospital in hospitals_matched %}
+                <li>{{ hospital[1] }} - Beds: {{ hospital[4] }}</li>
+            {% endfor %}
+            </ul>
+        {% else %}
+            <p>No matching hospitals found.</p>
+        {% endif %}
+    </div>
+
+    <div class="patient-table">
+        <h2>기존 환자 데이터</h2>
+        <form method="POST" action="{{ url_for('delete_patient') }}">
+            <table>
+                <thead>
+                    <tr>
+                        <th>삭제</th>
+                        <th>환자 번호</th>
+                        <th>이름</th>
+                        <th>생년월일</th>
+                        <th>혈액형</th>
+                        <th>ICD 코드</th>
+                    </tr>
+                </thead>
+		<tbody>
+		    {% for patient in all_patients %}
+		    <tr>
+			<td><input type="checkbox" name="delete_ids" value="{{ patient[0] }}"></td>  <!-- 체크박스 -->
+			<td>{{ patient[0] }}</td>  <!-- patient ID -->
+			<td>{{ patient[1] }}</td>  <!-- name -->
+			<td>{{ patient[2] }}</td>  <!-- birthdate -->
+			<td>{{ patient[3] }}</td>  <!-- blood type -->
+			<td>{{ patient[4] }}</td>  <!-- ICD code -->
+		    </tr>
+		    {% endfor %}
+		</tbody>
+
+            </table>
+            <button type="submit">선택한 환자 삭제</button>
+        </form>
+
+        <!-- 응급실 병상수 확인 버튼 추가 -->
+        <a href="{{ url_for('paramedic_dashboard') }}" class="btn">응급실 병상수 확인</a>
+    </div>
+</body>
+</html>
+

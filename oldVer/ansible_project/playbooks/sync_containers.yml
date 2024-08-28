@@ -1,0 +1,12 @@
+- hosts: all
+  become: true
+  tasks:
+    - name: Sync data between containers
+      shell: |
+        docker exec <container_name> rsync -avz /path/to/data <destination_container>:/path/to/destination
+      args:
+        chdir: /opt/ansible_project/
+      delegate_to: "{{ item }}"
+      with_items:
+        - Docker-WAS-DB-ExMid-1
+        - Docker-WAS-DB-ExMid-2
