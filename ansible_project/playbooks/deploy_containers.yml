@@ -24,17 +24,68 @@
         - proxyserver
         - webserver
 
-    - name: Install necessary packages
-      apt:
-        name: "{{ item }}"
-        state: present
+    - name: Get the process ID holdding the apt lock
+      shell: ps aux | grep -i '[a]pt'
+      register: apt_processes
+      ignore_errors: yes
+
+    - name: Kill the apt process
+      shell: kill -9 $(ps aux | grep '[a]pt' | awk '{print $2}' || true
+      when: apt_processes.stdout != ""
+      ignore_errors: yes
+      become: yes
+
+    - name: Remove apt lock files
+      file:
+        path: /var/lib/apt/lists/lock
+        state: absent
+      become: yes
+
+    - name: Run dpkg --configure -a to fix any interrupted installations
+      command: dpkg --configure -a
+      become: yes
+
+    - name: Clean apt cache
+      command: apt-get clean
+      become: yes
+
+    - name: Update apt cache
+      ansible.builtin.apt:
         update_cache: yes
-      with_items:
-        - apt-transport-https
-        - ca-certificates
-        - curl
-        - gnupg-agent
-        - software-properties-common
+        cache_valid_time: 3600
+      retries: 5
+      delay: 10
+      ignore_errors: yes
+
+    - name: Install necessary packages
+      block:
+        - name: Install individual package
+          apt:
+            name: "{{ item }}"
+            state: present
+            update_cache: yes
+          retries: 5
+          delay: 10
+          register: apt_install
+          until: apt_install is succeeded
+          ignore_errors: yes
+          with_items:
+            - apt-transport-https
+            - ca-certificates
+            - curl
+            - gnupg-agent
+            - software-properties-common
+
+        - name: Log failed installation
+          debug:
+            msg: "Failed to insstall package {{ item }}."
+          when: apt_install is failed
+          with_items:
+            - apt-transport-https
+            - ca-certificates
+            - curl
+            - gnupg-agent
+            - software-properties-common
 
     - name: Add Docker's official GPG key
       apt_key:
@@ -69,7 +120,7 @@
         chmod +x /usr/local/bin/docker-compose
 
     - name: Run Docker Compose to start the web server
-      shell: docker-compose -f /opt/MOKONIX/ansible_project/docker-compose.yml up -d
+      shell: docker-compose -f /opt/MOKONIX/ansible_project/docker-compose.yml up -d --build
       args:
         chdir: /opt/MOKONIX/ansible_project
 

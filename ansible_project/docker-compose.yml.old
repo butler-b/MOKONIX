@@ -83,6 +83,34 @@ services:
     networks:
       - app-network
 
+  elasticsearch:
+    image: elasticsearch:7.10.1
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+    ports:
+      - "9200:9200"
+    networks:
+      - elk-network
+
+  logstash:
+    image: logstash:7.10.1
+    container_name: logstash
+    volumes:
+      - ./logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+    ports:
+      - "5044:5044"
+    networks:
+      - elk-network
+
+  kibana:
+    image: kibana:7.10.1
+    container_name: kibana
+    ports:
+      - "5601:5601"
+    networks:
+      - elk-network
+
 networks:
   app-network:
     driver: bridge

@@ -8,10 +8,6 @@ if [ -z "$DATE" ]; then
   exit 1
 fi
 
-# ElasticSearch 데이터 복원
-echo "Restoring ElasticSearch data..."
-docker exec -t elasticsearch /usr/share/elasticsearch/bin/elasticsearch-snapshot.sh /backup/elastic-${DATE}.tar.gz --restore
-
 # Prometheus 데이터 복원
 echo "Restoring Prometheus data..."
 docker exec -t prometheus tar xzvf /backup/prometheus-${DATE}.tar.gz -C /prometheus
