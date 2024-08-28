@@ -1,5 +1,11 @@
-- name: Deploy Prometheus monitoring
-  shell: |
-    docker-compose -f /path/to/docker-compose.yml up -d
-  args:
-    chdir: /path/to/deployment_directory
+- name: Copy Logstash configuration file
+  copy:
+    src: logstash.conf
+    dest: /etc/logstash/conf.d/logstash.conf
+  notify:
+    - Restart Logstash
+
+- name: Ensure Logstash is running
+  service:
+    name: logstash
+    state: started

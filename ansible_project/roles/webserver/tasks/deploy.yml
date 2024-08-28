@@ -1,5 +1,5 @@
 - name: Deploy web server container
   shell: |
-    docker-compose -f /path/to/docker-compose.yml up -d
+    docker-compose -f /opt/MOKONIX/ansible_project/docker-compose.yml up -d
   args:
-    chdir: /path/to/deployment_directory
+    chdir: /opt/MOKONIX/ansible_project

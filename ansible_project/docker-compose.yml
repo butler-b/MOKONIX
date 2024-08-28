@@ -7,11 +7,11 @@ services:
       - "80:80"
     depends_on:
       - webserver
-      - nginx_prometheus_exporter # 추가된 부분
+      - nginx_prometheus_exporter
     networks:
       - app-network
 
-  nginx_prometheus_exporter: # 추가된 부분
+  nginx_prometheus_exporter:
     image: nginx/nginx-prometheus-exporter:latest
     container_name: nginx_prometheus_exporter
     ports:
@@ -72,11 +72,50 @@ services:
       - "3000:3000"
     networks:
       - app-network
+    volumes:
+      - ./grafana:/var/lib/grafana
+
+  node_exporter:
+    image: prom/node-exporter:latest
+    container_name: node_exporter
+    ports:
+      - "9100:9100"
+    networks:
+      - app-network
+
+  elasticsearch:
+    image: elasticsearch:7.10.1
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+    ports:
+      - "9200:9200"
+    networks:
+      - elk-network
+
+  logstash:
+    image: logstash:7.10.1
+    container_name: logstash
+    volumes:
+      - ./logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+    ports:
+      - "5044:5044"
+    networks:
+      - elk-network
+
+  kibana:
+    image: kibana:7.10.1
+    container_name: kibana
+    ports:
+      - "5601:5601"
+    networks:
+      - elk-network
 
 networks:
   app-network:
     driver: bridge
+  elk-network:
+    driver: bridge
 
 volumes:
   db_data:
-

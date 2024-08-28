@@ -1,0 +1,9 @@
+- name: Restart Logstash
+  service:
+    name: logstash
+    state: restarted
+
+- name: Restart Alertmanager
+  service:
+    name: alertmanager
+    state: restarted

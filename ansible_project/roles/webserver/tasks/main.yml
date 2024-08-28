@@ -1,1 +1,13 @@
-- include: deploy.yml
+- name: Copy Nginx configuration file
+  copy:
+    src: nginx.conf
+    dest: /etc/nginx/nginx.conf
+  notify:
+    - Restart Nginx
+
+- name: Copy index.html to Nginx web root
+  copy:
+    src: roles/webserver/files/index.html  # 수정된 경로
+    dest: /usr/share/nginx/html/index.html  # Nginx 설정에 맞는 위치로 복사
+  notify:
+    - Restart Nginx

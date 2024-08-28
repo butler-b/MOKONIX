@@ -1,5 +1,17 @@
 - hosts: all
   become: true
+  roles:
+    - /opt/MOKONIX/ansible_project/roles/monitoring
+
   tasks:
-    - include_tasks: /opt/ansible_project/playbooks/deploy_containers.yml
-    - include_tasks: /opt/ansible_project/playbooks/sync_containers.yml
+    - name: Deploy containers
+      import_tasks: /opt/MOKONIX/ansible_project/playbooks/deploy_containers.yml
+
+    - name: Sync containers
+      import_tasks: /opt/MOKONIX/ansible_project/playbooks/sync_containers.yml
+
+  post_tasks:
+    - name: Run backup script
+      shell: /opt/MOKONIX/ansible_project/backup.sh
+      when: inventory_hostname == 'primary_host'
+

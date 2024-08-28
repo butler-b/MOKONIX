@@ -1,0 +1,13 @@
+- hosts: all
+  become: true
+  roles:
+    - /mnt/ansible_test/roles/monitoring
+
+  tasks:
+    - include: /mnt/data/ansible_project/playbooks/deploy_containers.yml
+    - include: /mnt/data/ansible_project/playbooks/sync_containers.yml
+
+  post_tasks:
+    - name: Run backup script
+      shell: /mnt/data/ansible_project/backup.sh
+      when: inventory_hostname == 'primary_host'
