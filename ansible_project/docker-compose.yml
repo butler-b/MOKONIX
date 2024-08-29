@@ -72,8 +72,6 @@ services:
       - "3000:3000"
     networks:
       - app-network
-    volumes:
-      - ./grafana:/var/lib/grafana
 
   node_exporter:
     image: prom/node-exporter:latest
