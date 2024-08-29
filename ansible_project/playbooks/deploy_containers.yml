@@ -53,7 +53,7 @@
       ansible.builtin.apt:
         update_cache: yes
         cache_valid_time: 3600
-      retries: 5
+      retries: 2
       delay: 10
       ignore_errors: yes
 
@@ -64,7 +64,7 @@
             name: "{{ item }}"
             state: present
             update_cache: yes
-          retries: 5
+          retries: 2
           delay: 10
           register: apt_install
           until: apt_install is succeeded
@@ -78,7 +78,7 @@
 
         - name: Log failed installation
           debug:
-            msg: "Failed to insstall package {{ item }}."
+            msg: "Failed to install package {{ item }}."
           when: apt_install is failed
           with_items:
             - apt-transport-https
