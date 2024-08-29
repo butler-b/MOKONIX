@@ -1,5 +1,10 @@
 - hosts: all
   become: true
+  vars:
+    mysql_root_password: "example"            # root 비밀번호
+    replication_user: "exampleuser"           # 복제 전용 사용자
+    replication_password: "examplepass"       # 복제 사용자 비밀번호
+
   roles:
     - /opt/MOKONIX/ansible_project/roles/monitoring
 
@@ -10,18 +15,18 @@
     - name: Sync containers
       import_tasks: /opt/MOKONIX/ansible_project/playbooks/sync_containers.yml
 
-    - name: Install MySQL/MariaDB
+    - name: Install MariaDB server
       apt:
         name: mariadb-server
         state: present
 
-    - name: Ensure MySQL/MariaDB is started
+    - name: Ensure MariaDB is started
       service:
         name: mysql
         state: started
         enabled: yes
 
-    - name: Set the MySQL root password
+    - name: Set the MariaDB root password
       mysql_user:
         name: root
         host: localhost
@@ -81,7 +86,7 @@
       when: inventory_hostname == 'primary_host'
 
   handlers:
-    - name: Restart MySQL
+    - name: Restart MariaDB
       service:
         name: mysql
         state: restarted
