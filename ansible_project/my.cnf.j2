@@ -1,6 +1,0 @@
-[mysqld]
-server-id = {{ inventory_hostname == 'master1' | ternary(1, 2) }}
-log_bin = /var/log/mysql/mysql-bin.log
-binlog_do_db = your_database_name
-auto_increment_increment = 2
-auto_increment_offset = {{ inventory_hostname == 'master1' | ternary(1, 2) }}
