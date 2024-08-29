@@ -1,38 +1,13 @@
-- hosts: db_servers
+ hosts: all
   become: true
+  roles:
+    - /mnt/ansible_test/roles/monitoring
+
   tasks:
-    - name: Copy docker-compose.yml to servers
-      copy:
-        src: /path/to/local/docker-compose.yml
-        dest: /opt/MOKONIX/ansible_project/docker-compose.yml
+    - include: /mnt/data/ansible_project/playbooks/deploy_containers.yml
+    - include: /mnt/data/ansible_project/playbooks/sync_containers.yml
 
-    - name: Copy init.sql to servers
-      copy:
-        src: /path/to/local/init.sql
-        dest: /opt/MOKONIX/ansible_project/init.sql
-
-    - name: Start Docker Compose on servers
-      command: docker-compose up -d
-      args:
-        chdir: /opt/MOKONIX/ansible_project
-
-- hosts: db_servers
-  become: true
-  tasks:
-    - name: Wait for DB containers to be ready
-      wait_for:
-        port: 3306
-        delay: 10
-        timeout: 300
-
-    - name: Set up master-master replication on Docker-WEB-WAS-DB-ExMid-1
-      shell: docker exec db mysql -uroot -pexample -e "
-        CHANGE MASTER TO MASTER_HOST='10.10.2.3', MASTER_USER='exampleuser', MASTER_PASSWORD='examplepass', MASTER_LOG_FILE='mysql-bin.000001', MASTER_LOG_POS=4;
-        START SLAVE;"
-      when: inventory_hostname == "Docker-WEB-WAS-DB-ExMid-1"
-
-    - name: Set up master-master replication on Docker-WEB-WAS-DB-ExMid-2
-      shell: docker exec db mysql -uroot -pexample -e "
-        CHANGE MASTER TO MASTER_HOST='10.10.2.2', MASTER_USER='exampleuser', MASTER_PASSWORD='examplepass', MASTER_LOG_FILE='mysql-bin.000001', MASTER_LOG_POS=4;
-        START SLAVE;"
-      when: inventory_hostname == "Docker-WEB-WAS-DB-ExMid-2"
+  post_tasks:
+    - name: Run backup script
+      shell: /mnt/data/ansible_project/backup.sh
+      when: inventory_hostname == 'primary_host'
