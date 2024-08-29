@@ -43,7 +43,7 @@ services:
       FLASK_DEBUG: 1
 
   db:
-    build: ./db
+    image: mariadb:latest
     container_name: db
     environment:
       MYSQL_ROOT_PASSWORD: example
@@ -53,8 +53,11 @@ services:
     volumes:
       - db_data:/var/lib/mysql
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql  # init.sql 파일 추가
+    ports:
+      - "3306:3306"  # 외부에서 접근할 수 있도록 포트 매핑
     networks:
       - app-network
+    command: --bind-address=0.0.0.0  # MariaDB가 모든 IP에서 접근 가능하도록 설정
 
   prometheus:
     image: prom/prometheus:latest
