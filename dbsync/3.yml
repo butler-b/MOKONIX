@@ -23,14 +23,22 @@
         delay: 10
         timeout: 300
 
+    - name: Stop existing slave on Docker-WEB-WAS-DB-ExMid-1
+      shell: docker exec db mariadb -uroot -pexample -e "STOP SLAVE;"
+      when: inventory_hostname == "Docker-WEB-WAS-DB-ExMid-1"
+
     - name: Set up master-master replication on Docker-WEB-WAS-DB-ExMid-1
-      shell: docker exec db mysql -uroot -pexample -e "
+      shell: docker exec db mariadb -uroot -pexample -e "
         CHANGE MASTER TO MASTER_HOST='10.10.2.3', MASTER_USER='exampleuser', MASTER_PASSWORD='examplepass', MASTER_LOG_FILE='mysql-bin.000001', MASTER_LOG_POS=4;
         START SLAVE;"
       when: inventory_hostname == "Docker-WEB-WAS-DB-ExMid-1"
 
+    - name: Stop existing slave on Docker-WEB-WAS-DB-ExMid-2
+      shell: docker exec db mariadb -uroot -pexample -e "STOP SLAVE;"
+      when: inventory_hostname == "Docker-WEB-WAS-DB-ExMid-2"
+
     - name: Set up master-master replication on Docker-WEB-WAS-DB-ExMid-2
-      shell: docker exec db mysql -uroot -pexample -e "
+      shell: docker exec db mariadb -uroot -pexample -e "
         CHANGE MASTER TO MASTER_HOST='10.10.2.2', MASTER_USER='exampleuser', MASTER_PASSWORD='examplepass', MASTER_LOG_FILE='mysql-bin.000001', MASTER_LOG_POS=4;
         START SLAVE;"
       when: inventory_hostname == "Docker-WEB-WAS-DB-ExMid-2"
