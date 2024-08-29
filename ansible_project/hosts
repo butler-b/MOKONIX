@@ -1,16 +1,16 @@
 [app_servers]
-Docker-WEB-WAS-DB-ExMid-1 ansible_host=10.10.11.2 ansible_user=root
-Docker-WEB-WAS-DB-ExMid-2 ansible_host=10.10.12.2 ansible_user=root
+Docker-WEB-WAS-DB-ExMid-1 ansible_host=10.10.11.1 ansible_user=root
+Docker-WEB-WAS-DB-ExMid-2 ansible_host=10.10.11.2 ansible_user=root
 
 [db_servers]
-Docker-WEB-WAS-DB-ExMid-1 ansible_host=10.10.11.2 ansible_user=root
-Docker-WEB-WAS-DB-ExMid-2 ansible_host=10.10.12.2 ansible_user=root
+Docker-WEB-WAS-DB-ExMid-1 ansible_host=10.10.11.1 ansible_user=root
+Docker-WEB-WAS-DB-ExMid-2 ansible_host=10.10.11.2 ansible_user=root
 
 [web_servers]
-Docker-WEB-WAS-DB-ExMid-1 ansible_host=10.10.11.2 ansible_user=root
-Docker-WEB-WAS-DB-ExMid-2 ansible_host=10.10.12.2 ansible_user=root
+Docker-WEB-WAS-DB-ExMid-1 ansible_host=10.10.11.1 ansible_user=root
+Docker-WEB-WAS-DB-ExMid-2 ansible_host=10.10.11.2 ansible_user=root
 
 [proxy_servers]
-Docker-WEB-WAS-DB-ExMid-1 ansible_host=10.10.11.2 ansible_user=root
-Docker-WEB-WAS-DB-ExMid-2 ansible_host=10.10.12.2 ansible_user=root
+Docker-WEB-WAS-DB-ExMid-1 ansible_host=10.10.11.1 ansible_user=root
+Docker-WEB-WAS-DB-ExMid-2 ansible_host=10.10.11.2 ansible_user=root
 

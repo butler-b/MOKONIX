@@ -9,6 +9,15 @@
         state: directory
         mode: '0755'
 
+    - name: Synchronize docker-compose.yml to Docker server
+      synchronize:
+        src: "/opt/MOKONIX/ansible_project/docker-compose.yml"
+        dest: "/opt/MOKONIX/ansible_project/"
+        delete: yes
+        recursive: yes
+        rsync_opts:
+          - "--delete"
+
     - name: Synchronize role files to Docker server
       synchronize:
         src: "/opt/MOKONIX/ansible_project/roles/{{ item }}/files/"
@@ -53,7 +62,7 @@
       ansible.builtin.apt:
         update_cache: yes
         cache_valid_time: 3600
-      retries: 2
+      retries: 5
       delay: 10
       ignore_errors: yes
 
@@ -64,7 +73,7 @@
             name: "{{ item }}"
             state: present
             update_cache: yes
-          retries: 2
+          retries: 5
           delay: 10
           register: apt_install
           until: apt_install is succeeded
